@@ -26,4 +26,4 @@ view: run
 	$(VIEWER_BIN) ${WAVE}
 
 clean:
-	rm -f *.o *.cf *.ghw
+	rm -f *.cf *.ghw
