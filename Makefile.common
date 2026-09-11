@@ -1,0 +1,29 @@
+UNIT = top
+
+HDL_EXT=vhd
+
+UNIT_TB = ${UNIT}_tb
+TB_PATH = tb/${UNIT_TB}.${HDL_EXT}
+FILES = src/*.${HDL_EXT}
+
+GHDL_BIN = ghdl
+
+WAVE=${UNIT_TB}.ghw
+VIEWER_BIN = gtkwave
+
+
+all: clean build run view
+
+build:
+	$(GHDL_BIN) -a $(FILES)
+	$(GHDL_BIN) -a $(TB_PATH)
+	$(GHDL_BIN) -e $(UNIT_TB)
+
+run: build
+	$(GHDL_BIN) -r $(UNIT_TB) --wave=${WAVE}
+
+view: run
+	$(VIEWER_BIN) ${WAVE}
+
+clean:
+	rm -f *.o *.cf *.ghw
