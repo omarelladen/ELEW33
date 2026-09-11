@@ -1,0 +1,31 @@
+[*]
+[*] GTKWave Analyzer v3.3.121 (w)1999-2024 BSI
+[*] Thu Aug 27 11:42:02 2026
+[*]
+[dumpfile] ""
+[dumpfile_mtime] "Thu Aug 27 11:41:56 2026"
+[dumpfile_size] 4224
+[savefile] ""
+[timestart] 0
+[size] 1920 1010
+[pos] -51 -51
+*-27.600000 11600000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top.
+[treeopen] top.cont_74_tb.
+[treeopen] top.cont_74_tb.uut.
+[sst_width] 254
+[signals_width] 110
+[sst_expanded] 1
+[sst_vpaned_height] 653
+@28
+top.cont_74_tb.uut.clk
+top.cont_74_tb.uut.rst
+top.cont_74_tb.uut.en
+top.cont_74_tb.s_finished
+@22
+#{top.cont_74_tb.uut.s_q1[3:0]} top.cont_74_tb.uut.s_q1[3] top.cont_74_tb.uut.s_q1[2] top.cont_74_tb.uut.s_q1[1] top.cont_74_tb.uut.s_q1[0]
+#{top.cont_74_tb.uut.s_q2[3:0]} top.cont_74_tb.uut.s_q2[3] top.cont_74_tb.uut.s_q2[2] top.cont_74_tb.uut.s_q2[1] top.cont_74_tb.uut.s_q2[0]
+@25
+#{top.cont_74_tb.uut.q[7:0]} top.cont_74_tb.uut.q[7] top.cont_74_tb.uut.q[6] top.cont_74_tb.uut.q[5] top.cont_74_tb.uut.q[4] top.cont_74_tb.uut.q[3] top.cont_74_tb.uut.q[2] top.cont_74_tb.uut.q[1] top.cont_74_tb.uut.q[0]
+[pattern_trace] 1
+[pattern_trace] 0
