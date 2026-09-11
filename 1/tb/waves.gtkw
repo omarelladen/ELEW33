@@ -1,0 +1,33 @@
+[*]
+[*] GTKWave Analyzer v3.3.121 (w)1999-2024 BSI
+[*] Fri Sep 11 22:14:15 2026
+[*]
+[dumpfile] ""
+[dumpfile_mtime] "Fri Sep 11 22:14:13 2026"
+[dumpfile_size] 985
+[savefile] ""
+[timestart] 0
+[size] 1000 600
+[pos] -1 -1
+*-25.799999 382000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top.
+[treeopen] top.cont4_tb.
+[treeopen] top.cont4_tb.uut.
+[sst_width] 254
+[signals_width] 102
+[sst_expanded] 1
+[sst_vpaned_height] 342
+@28
+top.cont4_tb.uut.clk
+top.cont4_tb.uut.en
+@22
+#{top.cont4_tb.uut.q[3:0]} top.cont4_tb.uut.q[3] top.cont4_tb.uut.q[2] top.cont4_tb.uut.q[1] top.cont4_tb.uut.q[0]
+@28
+top.cont4_tb.uut.clr
+top.cont4_tb.uut.rst
+@29
+top.cont4_tb.uut.ld
+@22
+#{top.cont4_tb.uut.load[3:0]} top.cont4_tb.uut.load[3] top.cont4_tb.uut.load[2] top.cont4_tb.uut.load[1] top.cont4_tb.uut.load[0]
+[pattern_trace] 1
+[pattern_trace] 0
