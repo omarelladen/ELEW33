@@ -1,0 +1,44 @@
+[*]
+[*] GTKWave Analyzer v3.3.121 (w)1999-2024 BSI
+[*] Mon Sep  7 18:41:11 2026
+[*]
+[dumpfile] ""
+[dumpfile_mtime] "Mon Sep  7 18:40:17 2026"
+[dumpfile_size] 1082376
+[savefile] ""
+[timestart] 0
+[size] 1920 1010
+[pos] -51 -51
+*-35.871540 806912000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top.
+[treeopen] top.top_tb.
+[sst_width] 254
+[signals_width] 201
+[sst_expanded] 1
+[sst_vpaned_height] 653
+@28
+top.top_tb.s_clk
+top.top_tb.uut.s_en_10ms
+top.top_tb.s_finished
+@29
+top.top_tb.uut.s_clr
+@28
+[color] 7
+top.top_tb.s_rst
+[color] 5
+top.top_tb.uut.s_ss
+@22
+#{top.top_tb.uut.s_q[15:0]} top.top_tb.uut.s_q[15] top.top_tb.uut.s_q[14] top.top_tb.uut.s_q[13] top.top_tb.uut.s_q[12] top.top_tb.uut.s_q[11] top.top_tb.uut.s_q[10] top.top_tb.uut.s_q[9] top.top_tb.uut.s_q[8] top.top_tb.uut.s_q[7] top.top_tb.uut.s_q[6] top.top_tb.uut.s_q[5] top.top_tb.uut.s_q[4] top.top_tb.uut.s_q[3] top.top_tb.uut.s_q[2] top.top_tb.uut.s_q[1] top.top_tb.uut.s_q[0]
+@28
+[color] 2
+#{top.top_tb.s_disp_s1[6:0]} top.top_tb.s_disp_s1[6] top.top_tb.s_disp_s1[5] top.top_tb.s_disp_s1[4] top.top_tb.s_disp_s1[3] top.top_tb.s_disp_s1[2] top.top_tb.s_disp_s1[1] top.top_tb.s_disp_s1[0]
+[color] 2
+#{top.top_tb.s_disp_s0[6:0]} top.top_tb.s_disp_s0[6] top.top_tb.s_disp_s0[5] top.top_tb.s_disp_s0[4] top.top_tb.s_disp_s0[3] top.top_tb.s_disp_s0[2] top.top_tb.s_disp_s0[1] top.top_tb.s_disp_s0[0]
+[color] 2
+#{top.top_tb.s_disp_c1[6:0]} top.top_tb.s_disp_c1[6] top.top_tb.s_disp_c1[5] top.top_tb.s_disp_c1[4] top.top_tb.s_disp_c1[3] top.top_tb.s_disp_c1[2] top.top_tb.s_disp_c1[1] top.top_tb.s_disp_c1[0]
+[color] 2
+#{top.top_tb.s_disp_c0[6:0]} top.top_tb.s_disp_c0[6] top.top_tb.s_disp_c0[5] top.top_tb.s_disp_c0[4] top.top_tb.s_disp_c0[3] top.top_tb.s_disp_c0[2] top.top_tb.s_disp_c0[1] top.top_tb.s_disp_c0[0]
+[color] 3
+top.top_tb.uut.s_en_div
+[pattern_trace] 1
+[pattern_trace] 0
