@@ -1,0 +1,39 @@
+[*]
+[*] GTKWave Analyzer v3.3.121 (w)1999-2024 BSI
+[*] Sat Sep 26 00:40:34 2026
+[*]
+[dumpfile] ""
+[dumpfile_mtime] "Sat Sep 26 00:27:10 2026"
+[dumpfile_size] 701748
+[savefile] "/home/omar/Desktop/UTFPR/26-2/log/labs/4/ELEW33/4/tb/waves_tot.gtkw"
+[timestart] 0
+[size] 1366 700
+[pos] 1869 261
+*-25.799999 30300000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top.
+[treeopen] top.totalizadores_tb.
+[treeopen] top.totalizadores_tb.uut.
+[sst_width] 254
+[signals_width] 150
+[sst_expanded] 1
+[sst_vpaned_height] 409
+@28
+top.totalizadores_tb.s_clk
+[color] 3
+#{top.totalizadores_tb.uut.data_in[4:0]} top.totalizadores_tb.uut.data_in[4] top.totalizadores_tb.uut.data_in[3] top.totalizadores_tb.uut.data_in[2] top.totalizadores_tb.uut.data_in[1] top.totalizadores_tb.uut.data_in[0]
+#{top.totalizadores_tb.uut.out_demux[2:0]} top.totalizadores_tb.uut.out_demux[2] top.totalizadores_tb.uut.out_demux[1] top.totalizadores_tb.uut.out_demux[0]
+[color] 7
+#{top.totalizadores_tb.uut.out_soma[2:0]} top.totalizadores_tb.uut.out_soma[2] top.totalizadores_tb.uut.out_soma[1] top.totalizadores_tb.uut.out_soma[0]
+@29
+[color] 7
+#{top.totalizadores_tb.uut.out_sig_if[2:0]} top.totalizadores_tb.uut.out_sig_if[2] top.totalizadores_tb.uut.out_sig_if[1] top.totalizadores_tb.uut.out_sig_if[0]
+[color] 7
+#{top.totalizadores_tb.uut.out_case[2:0]} top.totalizadores_tb.uut.out_case[2] top.totalizadores_tb.uut.out_case[1] top.totalizadores_tb.uut.out_case[0]
+[color] 7
+#{top.totalizadores_tb.uut.out_var_if[2:0]} top.totalizadores_tb.uut.out_var_if[2] top.totalizadores_tb.uut.out_var_if[1] top.totalizadores_tb.uut.out_var_if[0]
+[color] 7
+#{top.totalizadores_tb.uut.out_while[2:0]} top.totalizadores_tb.uut.out_while[2] top.totalizadores_tb.uut.out_while[1] top.totalizadores_tb.uut.out_while[0]
+[color] 7
+#{top.totalizadores_tb.uut.out_for[2:0]} top.totalizadores_tb.uut.out_for[2] top.totalizadores_tb.uut.out_for[1] top.totalizadores_tb.uut.out_for[0]
+[pattern_trace] 1
+[pattern_trace] 0

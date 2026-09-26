@@ -1,0 +1,35 @@
+[*]
+[*] GTKWave Analyzer v3.3.121 (w)1999-2024 BSI
+[*] Fri Sep 25 22:46:11 2026
+[*]
+[dumpfile] ""
+[dumpfile_mtime] "Fri Sep 25 22:40:34 2026"
+[dumpfile_size] 1400873
+[savefile] "/home/omar/Desktop/UTFPR/26-2/log/labs/4/ELEW33/4/tb/waves_cont_serial.gtkw"
+[timestart] 0
+[size] 1366 700
+[pos] 1869 261
+*-25.500002 125200000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top.
+[treeopen] top.contador_serial_tb.
+[treeopen] top.contador_serial_tb.uut.
+[sst_width] 254
+[signals_width] 196
+[sst_expanded] 1
+[sst_vpaned_height] 410
+@28
+top.contador_serial_tb.uut.clk
+top.contador_serial_tb.uut.reset
+top.contador_serial_tb.uut.start
+top.contador_serial_tb.uut.done
+top.contador_serial_tb.s_finished
+#{top.contador_serial_tb.s_count_out[2:0]} top.contador_serial_tb.s_count_out[2] top.contador_serial_tb.s_count_out[1] top.contador_serial_tb.s_count_out[0]
+[color] 3
+#{top.contador_serial_tb.s_data_in[4:0]} top.contador_serial_tb.s_data_in[4] top.contador_serial_tb.s_data_in[3] top.contador_serial_tb.s_data_in[2] top.contador_serial_tb.s_data_in[1] top.contador_serial_tb.s_data_in[0]
+[color] 3
+#{top.contador_serial_tb.uut.s_shift_reg[4:0]} top.contador_serial_tb.uut.s_shift_reg[4] top.contador_serial_tb.uut.s_shift_reg[3] top.contador_serial_tb.uut.s_shift_reg[2] top.contador_serial_tb.uut.s_shift_reg[1] top.contador_serial_tb.uut.s_shift_reg[0]
+@29
+[color] 7
+#{top.contador_serial_tb.uut.s_acc_count[2:0]} top.contador_serial_tb.uut.s_acc_count[2] top.contador_serial_tb.uut.s_acc_count[1] top.contador_serial_tb.uut.s_acc_count[0]
+[pattern_trace] 1
+[pattern_trace] 0
