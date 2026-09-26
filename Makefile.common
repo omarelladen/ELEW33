@@ -12,6 +12,8 @@ WAVE=${UNIT_TB}.ghw
 VIEWER_BIN = gtkwave
 
 
+.PHONY: all clean build run view
+
 all: clean build run view
 
 build:
