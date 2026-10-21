@@ -19,7 +19,7 @@ begin
     --       e     c
     --        --d--
 
-    --          gfedcba (not: common anode)
+    --           gfedcba (not: common anode)
     seg7 <= not "0111111" when bcd=x"0" else
             not "0000110" when bcd=x"1" else
             not "1011011" when bcd=x"2" else
