@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 
-entity testeplaca is
+entity testboard is
 port(
     clk     : in  std_logic;  -- 50MHZ       (PIN_N2)
     rst     : in  std_logic;  -- SW0         (PIN_N25)
@@ -13,7 +13,7 @@ port(
 end entity;
 
 
-architecture a of testeplaca is
+architecture a of testboard is
 
 signal s_led : std_logic;
 
