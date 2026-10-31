@@ -1,0 +1,32 @@
+[*]
+[*] GTKWave Analyzer v3.3.121 (w)1999-2024 BSI
+[*] Wed Oct  7 12:53:20 2026
+[*]
+[dumpfile] "/home/omar/Desktop/UTFPR/26-2/log/labs/semaforo/top_tb.ghw"
+[dumpfile_mtime] "Wed Oct  7 12:52:23 2026"
+[dumpfile_size] 867129
+[savefile] "/home/omar/Desktop/UTFPR/26-2/log/labs/semaforo/tb/waves.gtkw"
+[timestart] 0
+[size] 1366 700
+[pos] -38 -38
+*-29.000000 552000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top.
+[treeopen] top.top_tb.
+[treeopen] top.top_tb.uut.
+[treeopen] top.top_tb.uut.traffic_light.
+[sst_width] 254
+[signals_width] 158
+[sst_expanded] 1
+[sst_vpaned_height] 318
+@28
+top.top_tb.s_clk
+top.top_tb.s_finished
+top.top_tb.s_rst
+#{top.top_tb.s_disp_sem1[6:0]} top.top_tb.s_disp_sem1[6] top.top_tb.s_disp_sem1[5] top.top_tb.s_disp_sem1[4] top.top_tb.s_disp_sem1[3] top.top_tb.s_disp_sem1[2] top.top_tb.s_disp_sem1[1] top.top_tb.s_disp_sem1[0]
+#{top.top_tb.s_disp_sem2[6:0]} top.top_tb.s_disp_sem2[6] top.top_tb.s_disp_sem2[5] top.top_tb.s_disp_sem2[4] top.top_tb.s_disp_sem2[3] top.top_tb.s_disp_sem2[2] top.top_tb.s_disp_sem2[1] top.top_tb.s_disp_sem2[0]
+@420
+top.top_tb.uut.traffic_light.s_state
+@421
+top.top_tb.uut.traffic_light.s_cnt
+[pattern_trace] 1
+[pattern_trace] 0

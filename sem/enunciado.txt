@@ -1,0 +1,31 @@
+Exercício inicial de máquinas de estado.
+Construir um semáforo de duas vias.
+
+Entregar:
+- Diagrama de estados e descrição textual do funcionamento
+- projeto no quartus
+- simulação Modelsim FUNCIONAL com snapshots de formas de onda relevantes
+- Evidências de execução na placa (fotos, vídeos, signaltap)
+
+Link com exemplo de máquina de estados:
+https://vhdlguru.blogspot.com/2010/04/how-to-implement-state-machines-in-vhdl.html
+
+
+Sinaleiro1: Verde    = LEDR2 ou segmento "d" do display de 7 segmentos
+            Amarelo  = LEDR1 ou segmento "g" do display de 7 segmentos
+            Vermelho = LEDR0 ou segmento "a" do display de 7 segmentos
+
+Sinaleiro2: Verde    = LEDG2 ou segmento "d" do display de 7 segmentos
+            Amarelo  = LEDG1 ou segmento "g" do display de 7 segmentos
+            Vermelho = LEDG0 ou segmento "a" do display de 7 segmentos
+
+Estado 0: Sinaleiro 1 e 2 piscam em amarelo por 5 segundos
+Estado 1: Sinaleiro 1 em vermelho e 2 em verde    por 40 segundos
+Estado 2: Sinaleiro 1 em vermelho e 2 em amarelo  por 5  segundos
+Estado 3: Sinaleiro 1 em verde    e 2 em vermelho por 40 segundos
+Estado 4: Sinaleiro 1 em amarelo  e 2 em vermelho por 5  segundos
+
+O sistema entra no estado 0 quando entra ou quando o botao de reset eh pressionado.
+Depois de sair do estado 0 a ordem eh: 1,2,3,4,1,2.....
+
+Para as simulacoes no modelSim os contadores foram reduzidos para facilitar a analise
