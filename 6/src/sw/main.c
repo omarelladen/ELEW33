@@ -52,6 +52,7 @@ int main(void)
     const char *name = "OMAR +++--+++ ";
     uint32_t name_len = strlen(name);
 
+    printf("\n==============================\n");
     printf("Name: %s\n", name);
     printf("Length: %u bytes\n", name_len);
 
@@ -77,7 +78,7 @@ int main(void)
         // sequence checksum
         IOWR_32DIRECT(HW_BASE, CTRL_OFFSET, sequence << 24 | checksum << 16);
 
-        delay(100);  // wair for HW checksum
+        delay(100);  // wait for HW checksum
 
 
         // Read HW checksum
@@ -87,7 +88,7 @@ int main(void)
         const bool    match_hw    = (ctrl_status >> 7) & 0x01;  // bit 7
 
 
-        printf("------------------------------\n");
+        printf("\n------------------------------\n");
         printf("sequence : %u\n", sequence);
         printf("checksum : 0x%02X\n", checksum);
         printf("checksum_hw : 0x%02X\n", checksum_hw);
@@ -97,7 +98,7 @@ int main(void)
         for (uint32_t i=0; i < NUM_WR; i++)
         {
             volatile uint8_t char_rd = read_byte(i);
-            printf("%c", char_rd);
+            printf("%c ", char_rd);
         }
 
         sequence++;
