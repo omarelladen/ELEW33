@@ -15,8 +15,8 @@
 #define CTRL_OFFSET  8
 
 // Avalon control register bit masks
-#define MEM_WR_BIT   (1 << 0)
-#define MEM_RD_BIT   (1 << 1)
+#define MEM_WE_BIT   (1 << 0)
+#define MEM_RE_BIT   (1 << 1)
 #define CHK_RST_BIT  (1 << 2)
 
 #define HW_BASE  USER_0_BASE
@@ -29,17 +29,17 @@ void delay(uint32_t iterations)
     for (volatile uint32_t k=0; k < iterations; k++) {}
 }
 
-void write_byte(uint32_t memory_idx, uint8_t byte_val)
+void write_byte(uint32_t mem_addr, uint8_t data)
 {
-    IOWR_32DIRECT(HW_BASE, ADDR_OFFSET, memory_idx);
-    IOWR_32DIRECT(HW_BASE, DATA_OFFSET, byte_val);
-    IOWR_32DIRECT(HW_BASE, CTRL_OFFSET, MEM_WR_BIT);
+    IOWR_32DIRECT(HW_BASE, ADDR_OFFSET, mem_addr);
+    IOWR_32DIRECT(HW_BASE, DATA_OFFSET, data);
+    IOWR_32DIRECT(HW_BASE, CTRL_OFFSET, MEM_WE_BIT);
 }
 
-uint8_t read_byte(uint32_t memory_idx)
+uint8_t read_byte(uint32_t mem_addr)
 {
-    IOWR_32DIRECT(HW_BASE, ADDR_OFFSET, memory_idx);
-    IOWR_32DIRECT(HW_BASE, CTRL_OFFSET, MEM_RD_BIT);
+    IOWR_32DIRECT(HW_BASE, ADDR_OFFSET, mem_addr);
+    IOWR_32DIRECT(HW_BASE, CTRL_OFFSET, MEM_RE_BIT);
 
     delay(50);
 
@@ -89,10 +89,10 @@ int main(void)
 
 
         printf("\n------------------------------\n");
-        printf("sequence : %u\n", sequence);
-        printf("checksum : 0x%02X\n", checksum);
-        printf("checksum_hw : 0x%02X\n", checksum_hw);
-        printf("match_hw : %s\n", match_hw ? "true" : "false");
+        printf("sequence: %u\n", sequence);
+        printf("checksum: 0x%02X\n", checksum);
+        printf("checksum_hw: 0x%02X\n", checksum_hw);
+        printf("match_hw: %s\n", match_hw ? "true" : "false");
 
 
         for (uint32_t i=0; i < NUM_WR; i++)
