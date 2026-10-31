@@ -5,3 +5,9 @@
 
 *.bak
 bak
+
+*.txt
+
+doc
+imgs
+vids
