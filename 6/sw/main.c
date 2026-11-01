@@ -15,35 +15,27 @@
 #define CTRL_OFFSET  8
 
 // Avalon control register bit masks
-#define MEM_WE_BIT   (1 << 0)
-#define MEM_RE_BIT   (1 << 1)
-#define CHK_RST_BIT  (1 << 2)
+#define CTRL_WE_BIT   (1 << 0)
+#define CTRL_RE_BIT   (1 << 1)
 
 #define HW_BASE  USER_0_BASE
 
 #define NUM_WR  1024
 
 
-void delay(uint32_t iterations)
-{
-    for (volatile uint32_t k=0; k < iterations; k++) {}
-}
-
 void write_byte(uint32_t mem_addr, uint8_t data)
 {
     IOWR_32DIRECT(HW_BASE, ADDR_OFFSET, mem_addr);
     IOWR_32DIRECT(HW_BASE, DATA_OFFSET, data);
-    IOWR_32DIRECT(HW_BASE, CTRL_OFFSET, MEM_WE_BIT);
+    IOWR_32DIRECT(HW_BASE, CTRL_OFFSET, CTRL_WE_BIT);
 }
 
 uint8_t read_byte(uint32_t mem_addr)
 {
     IOWR_32DIRECT(HW_BASE, ADDR_OFFSET, mem_addr);
-    IOWR_32DIRECT(HW_BASE, CTRL_OFFSET, MEM_RE_BIT);
+    IOWR_32DIRECT(HW_BASE, CTRL_OFFSET, CTRL_RE_BIT);
 
-    delay(50);
-
-    return (uint8_t)IORD_32DIRECT(HW_BASE, DATA_OFFSET);
+    return (uint8_t)IORD_32DIRECT(HW_BASE, DATA_OFFSET);  // 7..0
 }
 
 
@@ -57,51 +49,51 @@ int main(void)
     printf("Length: %u bytes\n", name_len);
 
 
-    uint32_t sequence = 1;
-
-    // Reset the registers
-    IOWR_32DIRECT(HW_BASE, CTRL_OFFSET, CHK_RST_BIT);
+    uint32_t sequence_sw = 0;
 
     while (1)
     {
         // Send
-        uint8_t checksum = 0;
+        uint8_t checksum_sw = 0;
         for (uint32_t i=0; i < NUM_WR; i++)
         {
             uint8_t char_wr = (uint8_t)name[i % name_len];
             write_byte(i, char_wr);
-            checksum += char_wr;
+            checksum_sw += char_wr;
         }
 
         // Handshake
-        // 31..24   23..16
-        // sequence checksum
-        IOWR_32DIRECT(HW_BASE, CTRL_OFFSET, sequence << 24 | checksum << 16);
-
-        delay(100);  // wait for HW checksum
+        // 31..24       23..16
+        // sequence_sw  checksum_sw
+        IOWR_32DIRECT(HW_BASE, CTRL_OFFSET, sequence_sw << 24 |
+                                            checksum_sw << 16);
 
 
         // Read HW checksum
         const uint32_t ctrl_status = IORD_32DIRECT(HW_BASE, CTRL_OFFSET);
 
-        const uint8_t checksum_hw = (ctrl_status >> 8) & 0xFF;  // 15..0
-        const bool    match_hw    = (ctrl_status >> 7) & 0x01;  // bit 7
+        // 31..24       23..16       15
+        // sequence_hw  checksum_hw  match_chk_hw
+        const uint8_t sequence_hw  = (ctrl_status >> 24) & 0xFF;
+        const uint8_t checksum_hw  = (ctrl_status >> 16) & 0xFF;
+        const bool    match_chk_hw = (ctrl_status >> 15) & 0x01;
 
 
         printf("\n------------------------------\n");
-        printf("sequence: %u\n", sequence);
-        printf("checksum: 0x%02X\n", checksum);
+        printf("sequence_sw: %u\n", sequence_sw);
+        printf("sequence_sw: %u\n", sequence_sw);
+        printf("checksum_sw: 0x%02X\n", checksum_sw);
         printf("checksum_hw: 0x%02X\n", checksum_hw);
-        printf("match_hw: %s\n", match_hw ? "true" : "false");
+        printf("match_chk_hw: %s\n", match_chk_hw ? "true" : "false");
 
 
         for (uint32_t i=0; i < NUM_WR; i++)
         {
             volatile uint8_t char_rd = read_byte(i);
-            printf("%c ", char_rd);
+            printf("%c", char_rd);
         }
 
-        sequence++;
+        sequence_sw++;
     }
 
     return 0;

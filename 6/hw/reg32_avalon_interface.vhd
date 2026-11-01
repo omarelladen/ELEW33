@@ -9,102 +9,118 @@ port(
     resetn     : in  std_logic;
     chipselect : in  std_logic;
     write_en   : in  std_logic;
-    add        : in  std_logic;  ------- 2 bits
     read_en    : in  std_logic;
-    writedata  : in  std_logic_vector(31 downto 0);  -- from NIOS
-    readdata   : out std_logic_vector(31 downto 0)   -- to   NIOS
+    add        : in  std_logic_vector(1  downto 0);
+    writedata  : in  std_logic_vector(31 downto 0);  -- from Nios
+    readdata   : out std_logic_vector(31 downto 0)   -- to   Nios
 );
 end entity;
 
 
 architecture a of reg32_avalon_interface is
 
-component reg32
+component bram is
 port(
-    clock  : in  std_logic;
-    resetn : in  std_logic;
-    we     : in  std_logic;
-    d      : in  std_logic_vector(31 downto 0);
-    q      : out std_logic_vector(31 downto 0)
+    address : in  std_logic_vector(9 downto 0);
+    clock   : in  std_logic;
+    data    : in  std_logic_vector(7 downto 0);
+    wren    : in  std_logic;
+    q       : out std_logic_vector(7 downto 0)
 );
 end component;
 
-component cont8bit
-port(
-    clk    : in  std_logic;
-    cmd    : in  std_logic_vector (31 downto 0);
-    output : out std_logic_vector (31 downto 0)
-);
-end component;
+signal s_reg_add  : std_logic_vector(9 downto 0);
+signal s_reg_data : std_logic_vector(7 downto 0);
+signal s_reg_ctrl : std_logic_vector(1 downto 0);
 
-signal write_enable0,
-       write_enable1,
-       read_enable0,
-       read_enable1,
-       read_enable_cnt,
-       reg_n_cont : std_logic;
+signal s_bram_q    : std_logic_vector(7 downto 0);
+signal s_bram_wren : std_logic;
 
-signal readdata_internal,
-       writedata_internal,
-       reg32_0,
-       reg32_1,
-       saida : std_logic_vector(31 downto 0);
+signal s_checksum_hw,
+       s_checksum_sw : std_logic_vector(7 downto 0);
+
+signal s_sequence_hw,
+       s_sequence_sw : std_logic_vector(7 downto 0);
+
+signal s_match_checksum : std_logic;
+signal s_new_sequence : std_logic;
+
+signal s_reset : std_logic;
 
 begin
+    s_reset <= not resetn;
 
-    reg32_def0 : reg32
+    bram_def: bram
     port map(
-        clock  => clock,
-        resetn => resetn,
-        we     => write_enable0,
-        d      => writedata_internal,
-        q      => reg32_0  -- readdata_internal
-    );
-    reg32_def1 : reg32
-    port map(
-        clock  => clock,
-        resetn => resetn,
-        we     => write_enable1,
-        d      => writedata_internal,
-        q      => reg32_1  -- readdata_internal
+        address => s_reg_add,
+        clock   => clock,
+        data    => s_reg_data,
+        wren    => s_bram_wren,
+        q       => s_bram_q
     );
 
-    cont8bit_def : cont8bit
-    port map(
-        clk    => clock,
-        output => saida,
-        cmd    => reg32_0
-    );
+    -- Write pulse
+    s_bram_wren <= s_reg_ctrl(0);
 
-    --readdata  <= x"12345678" when read_enable = '1' else (others => '0');
-    --readdata1 <= x"AAAA5555" when read_enable = '1' else (others => '0');
-    --readdata_internal <= x"12345678" when add2 = '0' else x"AAAA5555";
+    -- Compare sw and hw checksums
+    s_match_checksum <= '1' when s_checksum_hw=s_checksum_sw else
+                        '0';
 
-    write_enable0 <= write_en and chipselect  and (not add);  -------
-    write_enable1 <= write_en and chipselect  and      add;   -------
+    process(clock, s_reset)
+    begin
+        if s_reset='1' then
+            s_reg_add      <= (others => '0');
+            s_reg_data     <= (others => '0');
+            s_reg_ctrl     <= (others => '0');
+            s_checksum_hw  <= (others => '0');
+            s_checksum_sw  <= (others => '0');
+            s_sequence_hw  <= (others => '0');
+            s_sequence_sw  <= (others => '0');
+            s_new_sequence <= '0';
+        elsif rising_edge(clock) then
 
-    reg_n_cont  <=   '0';  -- reg32_0(0);
-    read_enable0    <= read_en and chipselect and (not add) and (not reg_n_cont);  -------
-    read_enable1    <= read_en and chipselect and      add  and (not reg_n_cont);  -------
-    read_enable_cnt <= read_en and chipselect and                    reg_n_cont ;
+            -- Self clear the control bits (for wr and wr pulse)
+            s_reg_ctrl <= "00";
 
- -- readdata <= x"01234567" when read_enable0   ='1' else  -- reg32_0
- --             x"AAAA5555" when read_enable1   ='1' else  -- reg32_1
- --             x"89ABCdEF" when read_enable_cnt='1' else  -- saida
- --             (others => 'Z');
+            if chipselect='1' and write_en='1' then
+                if    add="00" then
+                    s_reg_add  <= writedata(9 downto 0);  -- mem addr
+                elsif add="01" then
+                    s_reg_data <= writedata(7 downto 0);  -- data to wr to mem
+                elsif add="10" then
+                    s_reg_ctrl <= writedata(1 downto 0);  -- ctrl instructions
 
-    -- Test communication with static value
-    readdata <= x"00000043";
+                    -- Write to memory
+                    if writedata(0)='1' then  -- CTRL_WE_BIT
+                        if s_new_sequence='1' then
+                            s_checksum_hw <= s_reg_data;  -- restart
+                            s_new_sequence <= '0';
+                            s_sequence_hw  <= (others => '0');
+                        else  -- update checksum
+                            s_checksum_hw <= std_logic_vector(unsigned(s_checksum_hw) +
+                                                              unsigned(s_reg_data));
+                            s_sequence_hw <= std_logic_vector(unsigned(s_sequence_hw) + 1);
+                        end if;
+                    end if;
 
---  process(clock)
---  begin
---      if rising_edge(clock) then
---          if write_enable0 = '1' then
---              writedata_internal <= writedata;
---          elsif read_enable = '1' then
---              readdata <= saida;
---          end if;
---      end if;
---  end process;
+                    -- Handshake from software
+                    if writedata(31 downto 16) /= x"0000" then
+                        s_sequence_sw  <= writedata(31 downto 24); -- 31..24
+                        s_checksum_sw  <= writedata(23 downto 16); -- 23..16
+                        s_new_sequence <= '1';  -- flag to restart the checksum
+                    end if;
+
+                end if;
+            end if;
+        end if;
+    end process;
+
+    readdata <= s_sequence_hw &     -- 31..24
+                s_checksum_hw &     -- 23..16
+                s_match_checksum &  -- 15
+                "0000000" &         -- 14..8
+                s_bram_q            -- 7..0
+                          when (chipselect='1' and read_en='1')
+                else (others => 'Z');
 
 end architecture;
