@@ -36,6 +36,7 @@ uint8_t read_byte(uint32_t mem_addr)
     IOWR_32DIRECT(HW_BASE, CTRL_OFFSET, CTRL_RE_BIT);
 
     return (uint8_t)IORD_32DIRECT(HW_BASE, DATA_OFFSET);  // 7..0
+    // (DATA_OFFSET and CTRL_RE_BIT not needed in rd)
 }
 
 
@@ -71,6 +72,7 @@ int main(void)
 
         // Read HW checksum
         const uint32_t ctrl_status = IORD_32DIRECT(HW_BASE, CTRL_OFFSET);
+        // (CTRL_OFFSET not needed in rd)
 
         // 31..24       23..16       15
         // sequence_hw  checksum_hw  match_chk_hw
