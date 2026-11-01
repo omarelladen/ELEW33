@@ -15,8 +15,8 @@
 #define CTRL_OFFSET  8
 
 // Avalon control register bit masks
-#define CTRL_WE_BIT   (1 << 0)
-#define CTRL_RE_BIT   (1 << 1)
+#define CTRL_WE_BIT  (1 << 0)
+#define CTRL_RE_BIT  (1 << 1)
 
 #define HW_BASE  USER_0_BASE
 
@@ -82,7 +82,7 @@ int main(void)
 
 
         printf("\n------------------------------\n");
-        printf("sequence_sw: %u\n", sequence_sw);
+        printf("sequence_hw: %u\n", sequence_hw);
         printf("sequence_sw: %u\n", sequence_sw);
         printf("checksum_sw: 0x%02X\n", checksum_sw);
         printf("checksum_hw: 0x%02X\n", checksum_hw);
