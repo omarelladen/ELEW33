@@ -39,8 +39,7 @@ signal s_bram_wren : std_logic;
 signal s_checksum_hw,
        s_checksum_sw : std_logic_vector(7 downto 0);
 
-signal s_sequence_hw,
-       s_sequence_sw : std_logic_vector(7 downto 0);
+signal s_sequence_sw : std_logic_vector(7 downto 0);
 
 signal s_match_checksum : std_logic;
 signal s_new_sequence : std_logic;
@@ -74,7 +73,6 @@ begin
             s_reg_ctrl     <= (others => '0');
             s_checksum_hw  <= (others => '0');
             s_checksum_sw  <= (others => '0');
-            s_sequence_hw  <= (others => '0');
             s_sequence_sw  <= (others => '0');
             s_new_sequence <= '0';
         elsif rising_edge(clock) then
@@ -95,11 +93,9 @@ begin
                         if s_new_sequence='1' then
                             s_checksum_hw <= s_reg_data;  -- restart
                             s_new_sequence <= '0';
-                            s_sequence_hw  <= (others => '0');
                         else  -- update checksum
                             s_checksum_hw <= std_logic_vector(unsigned(s_checksum_hw) +
                                                               unsigned(s_reg_data));
-                            s_sequence_hw <= std_logic_vector(unsigned(s_sequence_hw) + 1);
                         end if;
                     end if;
 
@@ -115,7 +111,7 @@ begin
         end if;
     end process;
 
-    readdata <= s_sequence_hw &     -- 31..24
+    readdata <= s_sequence_sw &     -- 31..24
                 s_checksum_hw &     -- 23..16
                 s_match_checksum &  -- 15
                 "0000000" &         -- 14..8
