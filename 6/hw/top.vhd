@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 
-entity reg32_avalon_interface is
+entity top is
 port(
     clock      : in  std_logic;
     resetn     : in  std_logic;
@@ -17,7 +17,7 @@ port(
 end entity;
 
 
-architecture a of reg32_avalon_interface is
+architecture a of top is
 
 component bram is
 port(
