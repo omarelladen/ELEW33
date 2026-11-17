@@ -34,9 +34,8 @@
 
 
 #define IP    "192.168.15.2"
-#define PORT  8000
+#define PORT  8003
 
-#define STR_TEST "UTFPR Curitiba"
 #define LCD_TEXT "Lab7 - Omar"
 
 #define HW_BASE  USER_0_BASE
@@ -135,10 +134,6 @@ void SSSInitialTask(void *task_data)
     //error_code = OSTaskDel(OS_PRIO_SELF);
     //alt_uCOSIIErrorHandler(error_code, 0);
 
-
-    const char str[100] = STR_TEST;
-    uint32_t str_len = strlen(str);
-
     char p1[16];
     char p2[16];
 
@@ -165,46 +160,40 @@ void SSSInitialTask(void *task_data)
 
     while (1)
     {
-    	char hw_str[100];
-        uint32_t i = 0;
+        char hw_str[101];
+
+        // Wait for server str
+        int str_len = recv(SocketFD, buf, sizeof(buf) - 1, 0);
+        if (str_len <= 0)
+        {
+            perror("recv()");
+            break;  // exit(EXIT_FAILURE)
+        }
+        buf[str_len] = '\0';
+        printf("Str received from form: %s\n", buf);
 
         // Send 4 chars at a time
-        for (; i < str_len; i += 4)
+        for (uint32_t i=0; i < str_len; i += 4)
         {
             uint32_t word = 0;
             for (uint32_t j=0; j < 4 && i+j < str_len; j++)
-                word |= str[i+j] << (8*j);
+                word |= buf[i+j] << (8*j);
 
             wr_hw_32bits(word);
             uint32_t hw_word = rd_hw_32bits();
 
             for (uint32_t j=0; j < 4 && i+j < str_len; j++)
-            	hw_str[i+j] = (char)((hw_word >> (8*j)) & 0xFF);
+                hw_str[i+j] = (char)((hw_word >> (8*j)) & 0xFF);
         }
         hw_str[str_len] = '\0';
 
-
-        if (send(SocketFD, &hw_str, str_len, 0) < 0)
+        // Send hw str to server
+        if (send(SocketFD, hw_str, str_len, 0) < 0)
         {
             perror("send()");
-            exit(EXIT_FAILURE);
+            break;  // exit(EXIT_FAILURE);
         }
-        else
-        {
-            printf("Str sent to socket\n");
-        }
-
-        if (recv(SocketFD, buf, sizeof(buf), 0) < 0)
-        {
-            perror("recv()");
-            exit(EXIT_FAILURE);
-        }
-        else
-        {
-            printf("Str received from socket: %s\n", buf);
-            // memcpy(p1, buf,      16*sizeof(char));
-            // memcpy(p2, &buf[16], 16*sizeof(char));
-        }
+        printf("hw_str sent to server: %s\n", hw_str);
 
         msleep(5000);
     }
