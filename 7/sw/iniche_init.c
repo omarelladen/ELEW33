@@ -1,42 +1,40 @@
 // -std=c99
+// MicroC/OS-II and Altera NicheStack TCP/IP Stack
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
-// #include <stdbool.h>
-// #include <ctype.h>
 
-// #include <io.h>
-// #include <fcntl.h>
-
-#include "io.h"
 #include "system.h"
 
-#include "LCD.h"
-#include "dm9000a.h"
 #include "basic_io.h"
-#include "altera_avalon_pio_regs.h"
-// #include "alt_error_handler.h"
+#include "dm9000a.h"
+#include "LCD.h"
 
-/* Simple Socket Server definitions */
+// Simple Socket Server definitions
 #include "simple_socket_server.h"
+#include "alt_error_handler.h"
 
-/* MicroC/OS-II definitions */
-// #include "../simple_socket_bsp/HAL/inc/includes.h"
-// #include "../simple_socket_bsp/system.h"
+#include "altera_avalon_pio_regs.h"  // drivers/inc/
 
-/* NicheStack definitions */
-#include "../simple_socket_bsp/iniche/src/h/nios2/ipport.h"
-#include "../simple_socket_bsp/iniche/src/h/tcpport.h"
-// #include "../simple_socket_bsp/iniche/src/h/libport.h"
-#include "../simple_socket_bsp/iniche/src/nios2/osport.h"
+#include "io.h"  // HAL/inc/
+
+// MicroC/OS-II definitions
+#include "includes.h"  // HAL/inc/
+
+// NicheStack definitions
+#include "osport.h"   // iniche/src/nios2/
+#include "ipport.h"   // iniche/src/h/nios2/
+#include "libport.h"  // iniche/src/h/
+#include "tcpport.h"  // iniche/src/h/
 
 
-#define IP    "192.168.15.2"
+
+#define IP    "192.168.15.3"
 #define PORT  8003
 
-#define LCD_TEXT "Lab7 - Omar"
+#define LCD_TEXT  "Lab7 - Omar"
 
 #define HW_BASE  USER_0_BASE
 
@@ -50,20 +48,18 @@
 // #define CTRL_RE_BIT  (1 << 1)
 
 
-/* Definition of task stack for the initial task which will initialize the NicheStack
- * TCP/IP Stack and then initialize the rest of the Simple Socket Server example tasks.
- */
+// All tasks which use NicheStack (use sockets) are created with TK_NEWTASK
+
+// Task stack for the initial task
 OS_STK SSSInitialTaskStk[TASK_STACKSIZE];
 
-/* Declarations for creating a task with TK_NEWTASK.
- * All tasks which use NicheStack (those that use sockets) must be created this way.
- * TK_OBJECT macro creates the static task object used by NicheStack during operation.
- * TK_ENTRY macro corresponds to the entry point, or defined function name, of the task.
- * inet_taskinfo is the structure used by TK_NEWTASK to create the task.
- */
+// Static task object used by NicheStack during operation
 TK_OBJECT(to_ssstask);
+
+// Entry point of the task
 TK_ENTRY(SSSSimpleSocketServerTask);
 
+// Structure used by TK_NEWTASK to create the task
 struct inet_taskinfo ssstask = {
     &to_ssstask,
     "simple socket server",
@@ -89,10 +85,6 @@ uint32_t rd_hw_32bits()
 }
 
 
-/* SSSInitialTask will initialize the NicheStack
- * TCP/IP Stack and then initialize the rest of the Simple Socket Server example
- * RTOS structures and tasks.
- */
 void SSSInitialTask(void *task_data)
 {
     INT8U error_code;
@@ -107,32 +99,22 @@ void SSSInitialTask(void *task_data)
     alt_iniche_init();
     netmain();
 
-    /* Wait for the network stack to be ready before proceeding.
-    * iniche_net_ready indicates that TCP/IP stack is ready, and IP address is obtained.
-    */
+    // Wait for the network stack to be ready, and IP address is obtained
     while (!iniche_net_ready)
         TK_SLEEP(1);
 
-    /* Now that the stack is running, perform the application initialization steps */
-
-    /* Application Specific Task Launching Code Block Begin */
 
     printf("\nSimple Socket Server starting up\n");
 
-    /* Create the main simple socket server task. */
-    //TK_NEWTASK(&ssstask);
+    // Create recv/send task
+    // TK_NEWTASK(&ssstask);
 
-    /*create os data structures */
-    //SSSCreateOSDataStructs();
+    // Create OS data structures
+    // SSSCreateOSDataStructs();
 
     /* create the other tasks */
-    //SSSCreateTasks();
+    // SSSCreateTasks();
 
-    /* Application Specific Task Launching Code Block End */
-
-    /*This task is deleted because there is no need for it to run again */
-    //error_code = OSTaskDel(OS_PRIO_SELF);
-    //alt_uCOSIIErrorHandler(error_code, 0);
 
     char p1[16];
     char p2[16];
@@ -170,7 +152,7 @@ void SSSInitialTask(void *task_data)
             break;  // exit(EXIT_FAILURE)
         }
         buf[str_len] = '\0';
-        printf("Str received from form: %s\n", buf);
+        printf("Str received from server: %s\n", buf);
 
         // Send 4 chars at a time
         for (uint32_t i=0; i < str_len; i += 4)
@@ -200,40 +182,32 @@ void SSSInitialTask(void *task_data)
 }
 
 
-/* Main creates a single task, SSSInitialTask, and starts task scheduler. */
 int main (int argc, char* argv[], char* envp[])
 {
-
-    INT8U error_code;
-
+    // Initialize the DM9000A Ethernet Controller
     DM9000A_INSTANCE(DM9000A_0, dm9000a_0);
-    DM9000A_INIT(DM9000A_0, dm9000a_0);
+    DM9000A_INIT    (DM9000A_0, dm9000a_0);
 
-    /* Clear the RTOS timer */
+    // Clear the RTOS timer
     OSTimeSet(0);
 
-    /* SSSInitialTask will initialize the NicheStack
-    * TCP/IP Stack and then initialize the rest of the Simple Socket Server example
-    * RTOS structures and tasks.
-    */
-    error_code = OSTaskCreateExt(SSSInitialTask,
-                                 NULL,
-                                 (void *)&SSSInitialTaskStk[TASK_STACKSIZE],
-                                 SSS_INITIAL_TASK_PRIORITY,
-                                 SSS_INITIAL_TASK_PRIORITY,
-                                 SSSInitialTaskStk,
-                                 TASK_STACKSIZE,
-                                 NULL,
-                                 0);
+    // SSSInitialTask is the initial task which will initialize the NicheStack
+    // TCP/IP Stack and initialize the ROTS structures and other tasks
+    INT8U error_code = OSTaskCreateExt(SSSInitialTask,
+                                       NULL,
+                                       (void *)&SSSInitialTaskStk[TASK_STACKSIZE],
+                                       SSS_INITIAL_TASK_PRIORITY,
+                                       SSS_INITIAL_TASK_PRIORITY,
+                                       SSSInitialTaskStk,
+                                       TASK_STACKSIZE,
+                                       NULL,
+                                       0);
     alt_uCOSIIErrorHandler(error_code, 0);
 
-    /*
-    * As with all MicroC/OS-II designs, once the initial thread(s) and
-    * associated RTOS resources are declared, we start the RTOS. That's it!
-    */
+    // Start the RTOS (scheduler)
     OSStart();
 
-    while(1);  /* Correct Program Flow never gets here. */
+    while(1);  // Never reaches here
 
     return -1;
 }
