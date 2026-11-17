@@ -2,6 +2,7 @@ import socket
 import threading
 from typing import Annotated
 from urllib.parse import quote
+from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI, Form, HTTPException
@@ -12,15 +13,11 @@ __version__ = "0.1.0"
 
 IP = "0.0.0.0"
 PORT = 8003
+
 BUFFER_SIZE = 2000
 TIMEOUT = 5.0
 
 conn = None
-
-app = FastAPI(
-    title="server",
-    version=__version__
-)
 
 
 def start_socket_server():
@@ -31,7 +28,7 @@ def start_socket_server():
     s.bind((IP, PORT))
     s.listen(1)
 
-    print(f"Waiting Nios on {IP}:{PORT}...")
+    print(f"Waiting Nios on {IP}:{PORT}")
 
     while True:
         c, addr = s.accept()
@@ -59,6 +56,18 @@ def send_and_recv_socket(msg: str) -> str:
     except Exception as e:
         conn = None
         raise HTTPException(status_code=500, detail=f"Socket error: {e}")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    threading.Thread(target=start_socket_server, daemon=True).start()
+    yield
+
+app = FastAPI(
+    title="server",
+    version=__version__,
+    lifespan=lifespan,
+)
 
 
 @app.head("/", include_in_schema=False)
@@ -110,11 +119,6 @@ async def post_send_msg(msg: Annotated[str, Form()]):
         url=f"/msg?response={quote(response_nios)}",
         status_code=303
     )
-
-@app.on_event("startup")
-def startup_event():
-    threading.Thread(target=start_socket_server, daemon=True).start()
-
 
 if __name__ == "__main__":
     uvicorn.run(
