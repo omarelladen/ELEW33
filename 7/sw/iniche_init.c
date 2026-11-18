@@ -30,6 +30,7 @@
 #include "tcpport.h"  // iniche/src/h/
 
 
+
 #define IP    "192.168.15.3"
 #define PORT  8003
 
@@ -48,6 +49,7 @@
 
 
 void RecvSendTask(void *task_data);
+
 
 
 // All tasks which use NicheStack (use sockets) are created with TK_NEWTASK
@@ -115,6 +117,7 @@ void SSSInitialTask(void *task_data)
     // Create the other tasks
     SSSCreateTasks();
 
+
     // Delete this task
     INT8U error_code = OSTaskDel(OS_PRIO_SELF);
     alt_uCOSIIErrorHandler(error_code, 0);
@@ -124,11 +127,9 @@ void SSSInitialTask(void *task_data)
 
 void RecvSendTask(void *task_data)
 {
-    char p1[16];
-    char p2[16];
+    char buf[2000];
 
     struct sockaddr_in sa;
-    char buf[2000];
 
 
     int SocketFD = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -137,10 +138,6 @@ void RecvSendTask(void *task_data)
     sa.sin_port = htons(PORT);
     int res = inet_pton(AF_INET, IP, &sa.sin_addr);
 
-    LCD_Init();
-    LCD_Show_Text(LCD_TEXT);
-
-
     if (connect(SocketFD, (struct sockaddr *)&sa, sizeof sa) == -1)
     {
         perror("Failed to connect");
@@ -148,12 +145,16 @@ void RecvSendTask(void *task_data)
         exit(EXIT_FAILURE);
     }
 
+
+    LCD_Init();
+    LCD_Show_Text(LCD_TEXT);
+
     while (1)
     {
         char hw_str[101];
 
         // Wait for server str
-        int str_len = recv(SocketFD, buf, sizeof(buf) - 1, 0);
+        int str_len = recv(SocketFD, buf, sizeof(hw_str)-1, 0);
         if (str_len <= 0)
         {
             perror("recv()");
@@ -185,6 +186,13 @@ void RecvSendTask(void *task_data)
         }
         printf("hw_str sent to server: %s\n", hw_str);
     }
+
+
+    close(SocketFD);
+    INT8U error_code = OSTaskDel(OS_PRIO_SELF);
+    alt_uCOSIIErrorHandler(error_code, 0);
+
+    while (1);  // never reached
 }
 
 
