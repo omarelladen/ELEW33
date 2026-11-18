@@ -57,6 +57,26 @@ def send_and_recv_socket(msg: str) -> str:
         conn = None
         raise HTTPException(status_code=500, detail=f"Socket error: {e}")
 
+def create_html(msg: str = None) -> str:
+    response = f"Response: {msg}" if msg else ""
+
+    return f"""
+    <!DOCTYPE HTML>
+    <html>
+    <head><title>Form</title></head>
+    <body style='font-family: Arial; text-align: center;'>
+        <h1>Send a message to Nios</h1>
+        <br><br>
+        <form action='/send_msg' method='POST'>
+            <input type='text' name='msg' placeholder='Text' maxlength='100' required>
+            <input type='submit' value='Send'>
+        </form>
+        <br><br>
+        {response}
+    </body>
+    </html>
+    """
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -84,27 +104,11 @@ async def get_root():
 
 @app.get("/index.html", response_class=HTMLResponse)
 async def get_index():
-    with open("index.html", "r", encoding="utf-8") as f:
-        content = f.read()
-    return HTMLResponse(content=content)
+    return HTMLResponse(content=create_html())
 
 @app.get("/msg", response_class=HTMLResponse)
 async def get_msg(response: str = "No Response"):
-    return HTMLResponse(
-        content=f"""
-        <html>
-            <head>
-                <title>Message</title>
-            </head>
-            <body style="text-align: center;">
-                <h1>Message from Nios</h1>
-                {response}
-                <br><br>
-                <button onclick="window.location.href='/'">Back</button>
-            </body>
-        </html>
-        """
-    )
+    return HTMLResponse(content=create_html(response))
 
 @app.post("/send_msg")
 async def post_send_msg(msg: Annotated[str, Form()]):
@@ -112,11 +116,11 @@ async def post_send_msg(msg: Annotated[str, Form()]):
         raise HTTPException(detail="Message can't be empy", status_code=422)
 
     # Send to socket and wait response
-    response_nios = send_and_recv_socket(msg)
+    response = send_and_recv_socket(msg)
 
     # Redirect to /msg sending the response on URL
     return RedirectResponse(
-        url=f"/msg?response={quote(response_nios)}",
+        url=f"/msg?response={quote(response)}",
         status_code=303
     )
 
