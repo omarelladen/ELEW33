@@ -48,10 +48,12 @@
 // #define CTRL_RE_BIT  (1 << 1)
 
 
-void RecvSendTask(void *task_data);
+void SendTask(void *task_data);
+void RecvTask(void *task_data);
 
 
 int SocketFD;
+char hw_str[101];
 
 // All tasks which use NicheStack (use sockets) are created with TK_NEWTASK
 
@@ -59,20 +61,30 @@ int SocketFD;
 OS_STK SSSInitialTaskStk[TASK_STACKSIZE];
 
 // Static task object used by NicheStack during operation
-TK_OBJECT(to_recvsendtask);
+TK_OBJECT(to_recvtask);
+TK_OBJECT(to_sendtask);
 
 // Entry point of the task
-TK_ENTRY(RecvSendTask);
+TK_ENTRY(RecvTask);
+TK_ENTRY(SendTask);
+
+OS_EVENT *hw_mbox;
 
 // Structure used by TK_NEWTASK to create the task
-struct inet_taskinfo recvsendtask = {
-    &to_recvsendtask,
+struct inet_taskinfo recvtask = {
+    &to_recvtask,
     "recv task",
-    RecvSendTask,
+    RecvTask,
+    10,
+    APP_STACK_SIZE,
+};
+struct inet_taskinfo sendtask = {
+    &to_sendtask,
+    "send task",
+    SendTask,
     6,
     APP_STACK_SIZE,
 };
-
 
 void wr_hw_32bits(uint32_t data)
 {
@@ -109,6 +121,12 @@ void SSSInitialTask(void *task_data)
     printf("\nSimple Socket Server starting up\n");
 
 
+    LCD_Init();
+    LCD_Show_Text(LCD_TEXT);
+
+    hw_mbox  = OSMboxCreate(NULL);  // mailbox
+
+
     SocketFD = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 
     struct sockaddr_in sa;
@@ -124,13 +142,9 @@ void SSSInitialTask(void *task_data)
         exit(EXIT_FAILURE);
     }
 
-
-    LCD_Init();
-    LCD_Show_Text(LCD_TEXT);
-
-
     // Create tasks
-    TK_NEWTASK(&recvsendtask);
+    TK_NEWTASK(&recvtask);
+    TK_NEWTASK(&sendtask);
 
     // Create OS data structures
     SSSCreateOSDataStructs();
@@ -142,20 +156,18 @@ void SSSInitialTask(void *task_data)
     // Delete this task
     INT8U error_code = OSTaskDel(OS_PRIO_SELF);
     alt_uCOSIIErrorHandler(error_code, 0);
-
     while (1);  // never reached
 }
 
-void RecvSendTask(void *task_data)
+void RecvTask(void *task_data)
 {
     char buf[2000];
 
     while (1)
     {
-        char hw_str[101];
-
         // Wait for server str
         int str_len = recv(SocketFD, buf, sizeof(hw_str)-1, 0);
+
         if (str_len <= 0)
         {
             perror("recv()");
@@ -179,21 +191,38 @@ void RecvSendTask(void *task_data)
         }
         hw_str[str_len] = '\0';
 
-        // Send hw str to server
-        if (send(SocketFD, hw_str, str_len, 0) < 0)
-        {
-            perror("send()");
-            break;  // exit(EXIT_FAILURE);
-        }
-        printf("hw_str sent to server: %s\n", hw_str);
+        OSMboxPost(hw_mbox, (void *)hw_str);
     }
 
 
     close(SocketFD);
     INT8U error_code = OSTaskDel(OS_PRIO_SELF);
     alt_uCOSIIErrorHandler(error_code, 0);
-
     while (1);  // never reached
+}
+
+void SendTask(void *task_data)
+{
+    INT8U err;
+
+    while (1)
+    {
+        // Wait for RecvTask to post to mailbox
+        char *msg = (char *)OSMboxPend(hw_mbox, 0, &err);
+
+        int res = send(SocketFD, msg, strlen(msg), 0);
+
+        if (res < 0)
+        {
+            perror("send()");
+            break;  // exit(EXIT_FAILURE);
+        }
+        printf("hw_str sent to server: %s\n", msg);
+    }
+
+    INT8U error_code = OSTaskDel(OS_PRIO_SELF);
+    alt_uCOSIIErrorHandler(error_code, 0);
+    while (1);
 }
 
 
