@@ -126,6 +126,7 @@ async def post_send_msg(msg: Annotated[str, Form()]):
         status_code=303
     )
 
+
 if __name__ == "__main__":
     uvicorn.run(
         app="main:app",
