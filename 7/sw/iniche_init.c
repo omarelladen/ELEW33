@@ -30,7 +30,6 @@
 #include "tcpport.h"  // iniche/src/h/
 
 
-
 #define IP    "192.168.15.3"
 #define PORT  8003
 
@@ -48,23 +47,26 @@
 // #define CTRL_RE_BIT  (1 << 1)
 
 
+void RecvSendTask(void *task_data);
+
+
 // All tasks which use NicheStack (use sockets) are created with TK_NEWTASK
 
 // Task stack for the initial task
 OS_STK SSSInitialTaskStk[TASK_STACKSIZE];
 
 // Static task object used by NicheStack during operation
-TK_OBJECT(to_ssstask);
+TK_OBJECT(to_recvsendtask);
 
 // Entry point of the task
-TK_ENTRY(SSSSimpleSocketServerTask);
+TK_ENTRY(RecvSendTask);
 
 // Structure used by TK_NEWTASK to create the task
-struct inet_taskinfo ssstask = {
-    &to_ssstask,
-    "simple socket server",
-    SSSSimpleSocketServerTask,
-    4,
+struct inet_taskinfo recvsendtask = {
+    &to_recvsendtask,
+    "recv task",
+    RecvSendTask,
+    6,
     APP_STACK_SIZE,
 };
 
@@ -87,8 +89,6 @@ uint32_t rd_hw_32bits()
 
 void SSSInitialTask(void *task_data)
 {
-    INT8U error_code;
-
     /*
     * Initialize Altera NicheStack TCP/IP Stack - Nios II Edition specific code.
     * NicheStack is initialized from a task, so that RTOS will have started, and
@@ -103,19 +103,27 @@ void SSSInitialTask(void *task_data)
     while (!iniche_net_ready)
         TK_SLEEP(1);
 
-
     printf("\nSimple Socket Server starting up\n");
 
-    // Create recv/send task
-    // TK_NEWTASK(&ssstask);
+
+    // Create tasks
+    TK_NEWTASK(&recvsendtask);
 
     // Create OS data structures
-    // SSSCreateOSDataStructs();
+    SSSCreateOSDataStructs();
 
-    /* create the other tasks */
-    // SSSCreateTasks();
+    // Create the other tasks
+    SSSCreateTasks();
 
+    // Delete this task
+    INT8U error_code = OSTaskDel(OS_PRIO_SELF);
+    alt_uCOSIIErrorHandler(error_code, 0);
 
+    while (1);  // never reached
+}
+
+void RecvSendTask(void *task_data)
+{
     char p1[16];
     char p2[16];
 
@@ -176,8 +184,6 @@ void SSSInitialTask(void *task_data)
             break;  // exit(EXIT_FAILURE);
         }
         printf("hw_str sent to server: %s\n", hw_str);
-
-        msleep(5000);
     }
 }
 
@@ -207,7 +213,7 @@ int main (int argc, char* argv[], char* envp[])
     // Start the RTOS (scheduler)
     OSStart();
 
-    while(1);  // Never reaches here
+    while(1);  // never reached
 
     return -1;
 }
