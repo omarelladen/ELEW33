@@ -73,6 +73,8 @@ def create_html(msg: str = None) -> str:
         </form>
         <br><br>
         {response}
+        <br><br>
+        <button onclick="window.location.href='/'">Clean</button>
     </body>
     </html>
     """
