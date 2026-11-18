@@ -194,8 +194,8 @@ void RecvTask(void *task_data)
         OSMboxPost(hw_mbox, (void *)hw_str);
     }
 
-
     close(SocketFD);
+
     INT8U error_code = OSTaskDel(OS_PRIO_SELF);
     alt_uCOSIIErrorHandler(error_code, 0);
     while (1);  // never reached
