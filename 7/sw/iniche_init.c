@@ -51,6 +51,7 @@
 void RecvSendTask(void *task_data);
 
 
+int SocketFD;
 
 // All tasks which use NicheStack (use sockets) are created with TK_NEWTASK
 
@@ -108,6 +109,26 @@ void SSSInitialTask(void *task_data)
     printf("\nSimple Socket Server starting up\n");
 
 
+    SocketFD = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+    struct sockaddr_in sa;
+    memset(&sa, 0, sizeof sa);
+    sa.sin_family = AF_INET;
+    sa.sin_port = htons(PORT);
+    int res = inet_pton(AF_INET, IP, &sa.sin_addr);
+
+    if (connect(SocketFD, (struct sockaddr *)&sa, sizeof sa) == -1)
+    {
+        perror("Failed to connect");
+        close(SocketFD);
+        exit(EXIT_FAILURE);
+    }
+
+
+    LCD_Init();
+    LCD_Show_Text(LCD_TEXT);
+
+
     // Create tasks
     TK_NEWTASK(&recvsendtask);
 
@@ -128,26 +149,6 @@ void SSSInitialTask(void *task_data)
 void RecvSendTask(void *task_data)
 {
     char buf[2000];
-
-    struct sockaddr_in sa;
-
-
-    int SocketFD = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-    memset(&sa, 0, sizeof sa);
-    sa.sin_family = AF_INET;
-    sa.sin_port = htons(PORT);
-    int res = inet_pton(AF_INET, IP, &sa.sin_addr);
-
-    if (connect(SocketFD, (struct sockaddr *)&sa, sizeof sa) == -1)
-    {
-        perror("Failed to connect");
-        close(SocketFD);
-        exit(EXIT_FAILURE);
-    }
-
-
-    LCD_Init();
-    LCD_Show_Text(LCD_TEXT);
 
     while (1)
     {
