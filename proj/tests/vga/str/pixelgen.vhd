@@ -34,16 +34,16 @@ port(
 );
 end component font_rom;
 
-signal pix_x,
-       pix_y      : unsigned(9 downto 0);
-signal rom_addr   : std_logic_vector(10 downto 0);
-signal char_addr  : std_logic_vector(6  downto 0);  -- ascii code (part of rom_addr)
-signal row_addr   : std_logic_vector(3  downto 0);  -- y px
-signal bit_addr   : std_logic_vector(2  downto 0);  -- x px
-signal font_word  : std_logic_vector(7  downto 0);  -- value in rom_addr
-signal font_bit   : std_logic;                      -- bit_addr value in font_word
-signal font_rgb   : std_logic_vector(2  downto 0);
-signal txt_on     : std_logic;                      -- show or not
+signal s_pix_x,
+       s_pix_y     : unsigned(9 downto 0);
+signal s_rom_addr  : std_logic_vector(10 downto 0);
+signal s_char_addr : std_logic_vector(6  downto 0);  -- ascii code (part of s_rom_addr)
+signal s_row_addr  : std_logic_vector(3  downto 0);  -- y px
+signal s_bit_addr  : std_logic_vector(2  downto 0);  -- x px
+signal s_font_word : std_logic_vector(7  downto 0);  -- value in s_rom_addr
+signal s_font_bit  : std_logic;                      -- s_bit_addr value in s_font_word
+signal s_font_rgb  : std_logic_vector(2  downto 0);
+signal s_txt_on    : std_logic;                      -- show or not
 
 begin
 
@@ -52,23 +52,23 @@ begin
     vgablank <= f_on;
     vgasync  <= '0';
 
-    pix_x <= unsigned(f_column(9 downto 0));
-    pix_y <= unsigned(f_row);
+    s_pix_x <= unsigned(f_column(9 downto 0));
+    s_pix_y <= unsigned(f_row);
 
     font_unit: font_rom port map(
         clk  => not f_clock,
-        addr => rom_addr,
-        data => font_word
+        addr => s_rom_addr,
+        data => s_font_word
     );
 
-    row_addr <= std_logic_vector(pix_y(3 downto 0));
-    rom_addr <= char_addr & row_addr;
+    s_row_addr <= std_logic_vector(s_pix_y(3 downto 0));
+    s_rom_addr <= s_char_addr & s_row_addr;
 
-    txt_on <= '1' when (pix_x >= 320 and pix_x <= 415) and (pix_y >= 288 and pix_y <= 303) else
-              '0';
+    s_txt_on <= '1' when (s_pix_x >= 320 and s_pix_x <= 415) and (s_pix_y >= 288 and s_pix_y <= 303) else
+                '0';
 
-    with pix_x(7 downto 3) select
-        char_addr <=
+    with s_pix_x(7 downto 3) select
+        s_char_addr <=
             "1001111" when "01000",  -- O
             "1101101" when "01001",  -- m
             "1100001" when "01010",  -- a
@@ -81,21 +81,21 @@ begin
             "1010010" when "10001",  -- R
             "0000000" when others;
 
-    bit_addr <= not std_logic_vector(pix_x(2 downto 0));
-    font_bit <= font_word(to_integer(unsigned(bit_addr)));
+    s_bit_addr <= not std_logic_vector(s_pix_x(2 downto 0));
+    s_font_bit <= s_font_word(to_integer(unsigned(s_bit_addr)));
 
-    font_rgb <= "111" when font_bit='1' else "000";
+    s_font_rgb <= "111" when s_font_bit='1' else "000";
 
-    process(f_on, font_rgb, txt_on)
+    process(f_on, s_font_rgb, s_txt_on)
     begin
-        if f_on='0' or txt_on='0' then
-             r_out <= (others => '0');
-             g_out <= (others => '0');
-             b_out <= (others => '0');
+        if f_on='0' or s_txt_on='0' then
+            r_out <= (others => '0');
+            g_out <= (others => '0');
+            b_out <= (others => '0');
         else
-             r_out <= (others => font_rgb(0));
-             g_out <= (others => font_rgb(1));
-             b_out <= (others => font_rgb(2));
+            r_out <= (others => s_font_rgb(0));
+            g_out <= (others => s_font_rgb(1));
+            b_out <= (others => s_font_rgb(2));
         end if;
     end process;
 

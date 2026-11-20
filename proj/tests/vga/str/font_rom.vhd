@@ -14,9 +14,9 @@ end entity;
 
 architecture a of font_rom is
 
-type rom_type is array (0 to 2047) of std_logic_vector(7 downto 0);
+type t_rom is array (0 to 2047) of std_logic_vector(7 downto 0);
 
-constant ROM : rom_type := (
+constant ROM : t_rom := (
     -- A
     1040 => x"00", 1041 => x"10", 1042 => x"38", 1043 => x"6C",
     1044 => x"C6", 1045 => x"C6", 1046 => x"FE", 1047 => x"C6",

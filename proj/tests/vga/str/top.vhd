@@ -54,18 +54,18 @@ port(
 end component pixelgen;
 
 --Índice da linha/coluna atual
-signal current_row    : std_logic_vector(9  downto 0);
-signal current_column : std_logic_vector(10 downto 0);
-signal disp_enable    : std_logic;
+signal s_current_row    : std_logic_vector(9  downto 0);
+signal s_current_column : std_logic_vector(10 downto 0);
+signal s_disp_enable    : std_logic;
 
-signal hsync,
-       vsync,
+signal s_hsync,
+       s_vsync,
        s_vgablank,
        s_vgasync : std_logic;
 
-signal rp,
-       gp,
-       bp : std_logic_vector(9 downto 0);
+signal s_rp,
+       s_gp,
+       s_bp : std_logic_vector(9 downto 0);
 
 begin
 
@@ -74,22 +74,22 @@ begin
     sync_def : sync port map(
         reset         => reset,
         f_clock       => clock_50,
-        f_hsync       => hsync,
-        f_vsync       => vsync,
-        f_row         => current_row,
-        f_column      => current_column,
-        f_disp_enable => disp_enable
+        f_hsync       => s_hsync,
+        f_vsync       => s_vsync,
+        f_row         => s_current_row,
+        f_column      => s_current_column,
+        f_disp_enable => s_disp_enable
     );
 
     pixelgen_def : pixelgen port map(
         reset    => reset,
         f_clock  => clock_50,
-        f_on     => disp_enable,
-        f_row    => current_row,
-        f_column => current_column,
-        r_out    => rp,
-        g_out    => gp,
-        b_out    => bp,
+        f_on     => s_disp_enable,
+        f_row    => s_current_row,
+        f_column => s_current_column,
+        r_out    => s_rp,
+        g_out    => s_gp,
+        b_out    => s_bp,
         vgaclock => open,
         vgablank => s_vgablank,
         vgasync  => s_vgasync
@@ -98,11 +98,11 @@ begin
     process(clock_50)
     begin
         if rising_edge(clock_50) then
-            v_sync   <= vsync;
-            h_sync   <= hsync;
-            r        <= rp;
-            g        <= gp;
-            b        <= bp;
+            v_sync   <= s_vsync;
+            h_sync   <= s_hsync;
+            r        <= s_rp;
+            g        <= s_gp;
+            b        <= s_bp;
             vgablank <= s_vgablank;
             vgasync  <= s_vgasync;
         end if;

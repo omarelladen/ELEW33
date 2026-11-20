@@ -27,8 +27,8 @@ end entity;
 
 architecture a of pixelgen is
 
-signal rgbp,                                 -- previous
-       rgbn : std_logic_vector(2 downto 0);  -- next
+signal s_rgbp,                                 -- previous
+       s_rgbn : std_logic_vector(2 downto 0);  -- next
 
 begin
 
@@ -38,27 +38,27 @@ begin
     vgasync  <= '0';
 
     -- RGB ON only if the frame is on the active region
-    r_out <= (others => (rgbp(2) and f_on));
-    g_out <= (others => (rgbp(1) and f_on));
-    b_out <= (others => (rgbp(0) and f_on));
+    r_out <= (others => (s_rgbp(2) and f_on));
+    g_out <= (others => (s_rgbp(1) and f_on));
+    b_out <= (others => (s_rgbp(0) and f_on));
 
     -- New RGB values based on the column index
-    rgbn <= "000" when f_column=0   else  -- BLK
-            "001" when f_column=100 else  -- BLU
-            "010" when f_column=200 else  -- GRN
-            "011" when f_column=300 else  -- CYN
-            "100" when f_column=400 else  -- RED
-            "101" when f_column=500 else  -- MAG
-            "110" when f_column=600 else  -- YLW
-            "111" when f_column=700 else  -- WHI
-            rgbp;
+    s_rgbn <= "000" when f_column=0   else  -- BLK
+              "001" when f_column=100 else  -- BLU
+              "010" when f_column=200 else  -- GRN
+              "011" when f_column=300 else  -- CYN
+              "100" when f_column=400 else  -- RED
+              "101" when f_column=500 else  -- MAG
+              "110" when f_column=600 else  -- YLW
+              "111" when f_column=700 else  -- WHI
+              s_rgbp;
 
     process(f_clock, reset)
     begin
         if reset='0' then
-            rgbp <= (others => '0');
+            s_rgbp <= (others => '0');
         elsif rising_edge(f_clock) then
-            rgbp <= rgbn;
+            s_rgbp <= s_rgbn;
         end if;
     end process;
 

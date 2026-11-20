@@ -53,9 +53,9 @@ port(
 );
 end component;
 
-signal current_row    : std_logic_vector(9  downto 0);
-signal current_column : std_logic_vector(10 downto 0);
-signal disp_enable    : std_logic;
+signal s_current_row    : std_logic_vector(9  downto 0);
+signal s_current_column : std_logic_vector(10 downto 0);
+signal s_disp_enable    : std_logic;
 
 begin
 
@@ -64,17 +64,17 @@ begin
         f_clock       => clock_50,
         f_hsync       => h_sync,
         f_vsync       => v_sync,
-        f_row         => current_row,
-        f_column      => current_column,
-        f_disp_enable => disp_enable
+        f_row         => s_current_row,
+        f_column      => s_current_column,
+        f_disp_enable => s_disp_enable
     );
 
     pixelgen_def : pixelgen port map(
         reset    => reset,
         f_clock  => clock_50,
-        f_on     => disp_enable,
-        f_row    => current_row,
-        f_column => current_column,
+        f_on     => s_disp_enable,
+        f_row    => s_current_row,
+        f_column => s_current_column,
         r_out    => r,
         g_out    => g,
         b_out    => b,
