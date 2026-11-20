@@ -43,14 +43,14 @@ begin
     b_out <= (others => (rgbp(0) and f_on));
 
     -- New RGB values based on the column index
-    rgbn <= "000" when f_column="00000000000" else  -- BLK (col = 0)
-            "001" when f_column="00001100100" else  -- BLU (col = 100)
-            "010" when f_column="00011001000" else  -- GRN (col = 200)
-            "011" when f_column="00100101100" else  -- CYN (col = 300)
-            "100" when f_column="00110010000" else  -- RED (col = 400)
-            "101" when f_column="00111110100" else  -- MAG (col = 500)
-            "110" when f_column="01001011000" else  -- YLW (col = 600)
-            "111" when f_column="01010111100" else  -- WHI (col = 700)
+    rgbn <= "000" when f_column=0   else  -- BLK
+            "001" when f_column=100 else  -- BLU
+            "010" when f_column=200 else  -- GRN
+            "011" when f_column=300 else  -- CYN
+            "100" when f_column=400 else  -- RED
+            "101" when f_column=500 else  -- MAG
+            "110" when f_column=600 else  -- YLW
+            "111" when f_column=700 else  -- WHI
             rgbp;
 
     process(f_clock, reset)
