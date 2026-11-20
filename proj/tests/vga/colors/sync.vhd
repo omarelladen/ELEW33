@@ -1,6 +1,5 @@
 -- https://embarcados.com.br/controlador-vga-parte-2/
 -- 800x600, 72 Hz
--- DE2
 
 library ieee;
 use ieee.std_logic_1164.all;
