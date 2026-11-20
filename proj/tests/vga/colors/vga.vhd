@@ -7,7 +7,7 @@ use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
 
 
-entity vga is
+entity top is
 port(
     clock_50  : in  std_logic;
     reset     : in  std_logic;
@@ -23,9 +23,9 @@ port(
 end entity;
 
 
-architecture a of vga is
+architecture a of top is
 
-component vga_sync is
+component sync is
 port(
     reset         : in  std_logic;
     f_clock       : in  std_logic;
@@ -37,7 +37,7 @@ port(
 );
 end component;
 
-component vga_pixelgen is
+component pixelgen is
 port(
     reset     : in  std_logic;
     f_clock   : in  std_logic;
@@ -59,7 +59,7 @@ signal disp_enable    : std_logic;
 
 begin
 
-    sync : vga_sync port map(
+    sync_def : sync port map(
         reset         => reset,
         f_clock       => clock_50,
         f_hsync       => h_sync,
@@ -69,7 +69,7 @@ begin
         f_disp_enable => disp_enable
     );
 
-    pixelgen : vga_pixelgen port map(
+    pixelgen_def : pixelgen port map(
         reset     => reset,
         f_clock   => clock_50,
         f_on      => disp_enable,

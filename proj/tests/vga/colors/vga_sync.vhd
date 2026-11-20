@@ -8,7 +8,7 @@ use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
 
 
-entity vga_sync is
+entity sync is
 port(
     reset         : in  std_logic;
     f_clock       : in  std_logic;  -- 50 MHz
@@ -18,10 +18,10 @@ port(
     f_column      : out std_logic_vector(10 downto 0); -- col ind
     f_disp_enable : out std_logic  -- active frame region
 );
-end entity vga_sync;
+end entity;
 
 
-architecture a of vga_sync is
+architecture a of sync is
 
 -- Horizontal control
 signal h_cmp1,  -- counter = D

@@ -8,7 +8,7 @@ use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
 
 
-entity vga_pixelgen is
+entity pixelgen is
 port(
     reset     : in  std_logic;
     f_clock   : in  std_logic;  -- 50 MHz
@@ -22,10 +22,10 @@ port(
     vgablank  : out std_logic;
     vgasync   : out std_logic
 );
-end entity vga_pixelgen;
+end entity;
 
 
-architecture a of vga_pixelgen is
+architecture a of pixelgen is
 
 signal rgbp,                                 -- previous
        rgbn : std_logic_vector(2 downto 0);  -- next
