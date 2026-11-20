@@ -10,17 +10,17 @@ use ieee.std_logic_unsigned.all;
 
 entity pixelgen is
 port(
-    reset     : in  std_logic;
-    f_clock   : in  std_logic;  -- 50 MHz
-    f_on      : in  std_logic;  -- active frame region
-    f_row     : in  std_logic_vector(9  downto 0);  -- row index
-    f_column  : in  std_logic_vector(10 downto 0);  -- col index
-    r_out     : out std_logic_vector(9  downto 0);
-    g_out     : out std_logic_vector(9  downto 0);
-    b_out     : out std_logic_vector(9  downto 0);
-    vgaclock  : out std_logic;
-    vgablank  : out std_logic;
-    vgasync   : out std_logic
+    reset    : in  std_logic;
+    f_clock  : in  std_logic;  -- 50 MHz
+    f_on     : in  std_logic;  -- active frame region
+    f_row    : in  std_logic_vector(9  downto 0);  -- row index
+    f_column : in  std_logic_vector(10 downto 0);  -- col index
+    r_out    : out std_logic_vector(9  downto 0);
+    g_out    : out std_logic_vector(9  downto 0);
+    b_out    : out std_logic_vector(9  downto 0);
+    vgaclock : out std_logic;
+    vgablank : out std_logic;
+    vgasync  : out std_logic
 );
 end entity;
 
