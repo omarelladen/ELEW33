@@ -43,7 +43,7 @@ signal s_bit_addr  : std_logic_vector(2  downto 0);  -- x px
 signal s_font_word : std_logic_vector(7  downto 0);  -- value in s_rom_addr
 signal s_font_bit  : std_logic;                      -- s_bit_addr value in s_font_word
 signal s_font_rgb  : std_logic_vector(2  downto 0);
-signal s_txt_on    : std_logic;                      -- show or not
+signal s_txt_on    : std_logic;
 
 begin
 
@@ -64,6 +64,7 @@ begin
     s_row_addr <= std_logic_vector(s_pix_y(3 downto 0));
     s_rom_addr <= s_char_addr & s_row_addr;
 
+    -- Show on center
     s_txt_on <= '1' when (s_pix_x >= 320 and s_pix_x <= 415) and (s_pix_y >= 288 and s_pix_y <= 303) else
                 '0';
 
